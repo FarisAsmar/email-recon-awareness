@@ -20,7 +20,7 @@ Most people don’t realize:
 ## 🛠️ How to Run
 
 ```bash
-git clone https://github.com/yourusername/email-recon-awareness.git
+cd ~
+rm -rf email-recon-awareness  # delete old folder
+git clone https://github.com/FarisAsmar/email-recon-awareness.git
 cd email-recon-awareness
-pip install -r requirements.txt
-python email_recon.py --email example@gmail.com
