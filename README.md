@@ -1,2 +1,26 @@
 # email-recon-awareness
-This project simulates how unclaimed or reused email addresses can be hijacked across platforms raising awareness about credential hygiene and digital identity risks.
+# 🕵️‍♂️ Email Recon Awareness Tool
+
+This project simulates how unclaimed or reused email addresses can be hijacked across platforms—raising awareness about credential hygiene and digital identity risks.
+
+## 🔍 What It Does
+
+- Checks if an email is available on Gmail, Yahoo, Outlook
+- Probes social media platforms (Instagram, TikTok, Twitter) for linked accounts
+- Flags breach status using public APIs (EmailRep, HaveIBeenPwned)
+- Outputs a risk report showing potential hijack vectors
+
+## ⚠️ Why It Matters
+
+Most people don’t realize:
+- Their old or unused emails may still be tied to active accounts
+- If those emails are unclaimed, attackers can register them and reset passwords
+- This tool demonstrates the risk—ethically and educationally
+
+## 🛠️ How to Run
+
+```bash
+git clone https://github.com/yourusername/email-recon-awareness.git
+cd email-recon-awareness
+pip install -r requirements.txt
+python email_recon.py --email example@gmail.com
