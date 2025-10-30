@@ -3,7 +3,7 @@ CREATED BY: FARIS ASMAR | Michigan
 # email-recon-awareness
 # 🕵️‍♂️ Email Recon Awareness Tool
 
-This project simulates how unclaimed or reused email addresses can be hijacked across platforms—raising awareness about credential hygiene and digital identity risks.
+This project simulates how unclaimed or reused email addresses can be hijacked across platforms—raising awareness about credential hygiene and digital identity risks. This is one of my first projects, using old memories I had when I was younger to get into accounts for fun, and I realised I could automate this using python.
 
 ## 🔍 What It Does
 
