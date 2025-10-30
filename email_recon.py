@@ -1,5 +1,5 @@
 from social_probe import check_instagram
-from gmail_probe import check_gmail_availability
+from gmail_probe import check_gmail_availability, check_email_exists
 
 def run_recon(email):
     print(f"[+] Running recon for: {email}")
