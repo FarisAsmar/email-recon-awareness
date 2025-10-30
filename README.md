@@ -1,3 +1,5 @@
+CREATED BY: FARIS ASMAR | Michigan 
+
 # email-recon-awareness
 # 🕵️‍♂️ Email Recon Awareness Tool
 
@@ -24,3 +26,6 @@ cd ~
 rm -rf email-recon-awareness  # delete old folder
 git clone https://github.com/FarisAsmar/email-recon-awareness.git
 cd email-recon-awareness
+AFTER DOWNLOAD: source venv/bin/activate
+then, python email_recon.py --email targetemail@example.com
+MAKE SURE, REQUIREMENTS ARE INSTALLED>
