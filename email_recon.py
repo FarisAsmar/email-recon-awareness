@@ -4,11 +4,17 @@ from gmail_probe import check_gmail_availability, check_email_exists
 def run_recon(email):
     print(f"[+] Running recon for: {email}")
 
+    # Check if email is deliverable
+    email_valid = check_email_exists(email)
+
+    # Check linked accounts
     linked_accounts = []
     linked_accounts += check_instagram(email)
 
-    breach_status = "Unknown"  # Skip EmailRep for now
+    # Skip breach check for now
+    breach_status = "Unknown"
 
+    # Check Gmail availability
     available = check_gmail_availability(email)
 
     # Risk logic
@@ -22,6 +28,7 @@ def run_recon(email):
     # Final report
     report = {
         "email": email,
+        "email_valid": email_valid,
         "linked_accounts": linked_accounts,
         "breach_status": breach_status,
         "gmail_available": available,
