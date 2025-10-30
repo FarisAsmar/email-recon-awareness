@@ -1,12 +1,26 @@
-def check_gmail_availability(email):
-    username = email.split("@")[0].lower()
+import smtplib
+import dns.resolver
 
-    # Simulated logic: treat common usernames as taken
-    taken_usernames = ["john", "jane", "admin", "test", "info", "support", "123", "user"]
+def check_email_exists(email):
+    domain = email.split('@')[-1]
+    try:
+        mx_records = dns.resolver.resolve(domain, 'MX')
+        mx_host = str(mx_records[0].exchange)
 
-    if any(x in username for x in taken_usernames):
-        print(f"[+] Gmail says {email} is already taken (simulated)")
+        server = smtplib.SMTP()
+        server.set_debuglevel(0)
+        server.connect(mx_host)
+        server.helo(server.local_hostname)
+        server.mail('test@example.com')
+        code, message = server.rcpt(email)
+        server.quit()
+
+        if code == 250:
+            print(f"[+] Email appears to be deliverable: {email}")
+            return True
+        else:
+            print(f"[-] Email rejected by server: {email}")
+            return False
+    except Exception as e:
+        print(f"[-] Error checking email: {e}")
         return False
-    else:
-        print(f"[+] Gmail says {email} is available (simulated)")
-        return True
