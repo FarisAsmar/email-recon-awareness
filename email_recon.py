@@ -1,13 +1,13 @@
 from social_probe import check_instagram
-from gmail_probe import check_gmail_ychecker
+from gmail_probe import check_gmail_signup_probe  # ✅ Playwright-based Gmail existence check
 
 def run_recon(email):
     print(f"[+] Running recon for: {email}")
 
-    # ✅ Check if email is valid and deliverable via YChecker
-    email_valid = check_gmail_ychecker(email)
+    # ✅ Check if Gmail exists via signup flow
+    email_valid = check_gmail_signup_probe(email)
 
-    # ✅ Check linked social accounts
+    # ✅ Check linked social accounts (Instagram)
     linked_accounts = check_instagram(email)
 
     # 🔒 Breach check placeholder
