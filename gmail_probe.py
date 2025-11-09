@@ -1,15 +1,13 @@
 import requests
 
 def check_gmail_ychecker(email):
-    url = "https://ychecker.com/"
+    url = f"https://ychecker.com/?email={email}"
     headers = {
-        "Content-Type": "application/json",
         "Accept": "application/json"
     }
-    payload = {"email": email}
 
     try:
-        response = requests.post(url, json=payload, headers=headers, timeout=5)
+        response = requests.get(url, headers=headers, timeout=5)
         response.raise_for_status()
         data = response.json()
 
