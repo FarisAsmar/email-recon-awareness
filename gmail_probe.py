@@ -1,32 +1,30 @@
-import requests
+from playwright.sync_api import sync_playwright
 
-def check_gmail_ychecker(email):
-    url = f"https://ychecker.com/?email={email}"
-    headers = {
-        "Accept": "application/json"
-    }
+def check_gmail_signup_probe(email):
+    username = email.split("@")[0]
 
-    try:
-        response = requests.get(url, headers=headers, timeout=5)
-        response.raise_for_status()
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://accounts.google.com/signup")
 
-        # ✅ Check if response is JSON
-        if "application/json" in response.headers.get("Content-Type", ""):
-            data = response.json()
-            status = data.get("status", "unknown")
-            deliverable = data.get("deliverable", False)
-            reason = data.get("reason", "none")
+        # Fill dummy data
+        page.fill("input[name='firstName']", "Test")
+        page.fill("input[name='lastName']", "User")
+        page.fill("input[name='Username']", username)
+        page.fill("input[name='Passwd']", "Test@1234")
+        page.fill("input[name='ConfirmPasswd']", "Test@1234")
 
-            print(f"[YChecker] 📬 Status: {status}, Reason: {reason}, Deliverable: {deliverable}")
-            return status == "valid" and deliverable
+        # Trigger validation
+        page.click("button:has-text('Next')")
+        page.wait_for_timeout(2000)
+
+        content = page.content()
+        browser.close()
+
+        if "That username is taken" in content:
+            print(f"[Gmail Probe] ✅ Gmail exists: {email}")
+            return True
         else:
-            print(f"[YChecker] ❌ Unexpected content type: {response.headers.get('Content-Type')}")
-            print(f"[YChecker] ❌ Raw response: {response.text[:200]}")
+            print(f"[Gmail Probe] ❌ Gmail not found: {email}")
             return False
-
-    except requests.exceptions.HTTPError as e:
-        print(f"[YChecker] ❌ HTTP error: {e.response.status_code} — {e.response.text}")
-        return False
-    except Exception as e:
-        print(f"[YChecker] ❗ Error checking {email}: {e}")
-        return False
