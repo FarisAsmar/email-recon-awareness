@@ -4,19 +4,19 @@ from gmail_probe import check_gmail_ychecker
 def run_recon(email):
     print(f"[+] Running recon for: {email}")
 
-    # Check if email is valid and deliverable via YChecker
+    # ✅ Check if email is valid and deliverable via YChecker
     email_valid = check_gmail_ychecker(email)
 
-    # Check linked social accounts
+    # ✅ Check linked social accounts
     linked_accounts = check_instagram(email)
 
-    # Skip breach check for now
+    # 🔒 Breach check placeholder
     breach_status = "Unknown"
 
-    # Gmail availability logic (same as email_valid for now)
+    # ✅ Gmail availability logic (same as email_valid for now)
     gmail_available = email_valid
 
-    # Risk logic
+    # 🔍 Risk logic
     if gmail_available and linked_accounts:
         risk_level = "High"
     elif not gmail_available and linked_accounts:
@@ -24,7 +24,7 @@ def run_recon(email):
     else:
         risk_level = "Low"
 
-    # Final report
+    # 📊 Final report
     report = {
         "email": email,
         "email_valid": email_valid,
@@ -40,7 +40,7 @@ def run_recon(email):
 
     return report
 
-# Run it
+# 🚀 CLI Entry Point
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 2 and sys.argv[1] == "--email":
