@@ -1,26 +1,25 @@
 from social_probe import check_instagram
-from gmail_probe import check_gmail_availability, check_email_exists
+from gmail_probe import check_gmail_ychecker
 
 def run_recon(email):
     print(f"[+] Running recon for: {email}")
 
-    # Check if email is deliverable
-    email_valid = check_email_exists(email)
+    # Check if email is valid and deliverable via YChecker
+    email_valid = check_gmail_ychecker(email)
 
-    # Check linked accounts
-    linked_accounts = []
-    linked_accounts += check_instagram(email)
+    # Check linked social accounts
+    linked_accounts = check_instagram(email)
 
     # Skip breach check for now
     breach_status = "Unknown"
 
-    # Check Gmail availability
-    available = check_gmail_availability(email)
+    # Gmail availability logic (same as email_valid for now)
+    gmail_available = email_valid
 
     # Risk logic
-    if available and linked_accounts:
+    if gmail_available and linked_accounts:
         risk_level = "High"
-    elif not available and linked_accounts:
+    elif not gmail_available and linked_accounts:
         risk_level = "Medium"
     else:
         risk_level = "Low"
@@ -31,7 +30,7 @@ def run_recon(email):
         "email_valid": email_valid,
         "linked_accounts": linked_accounts,
         "breach_status": breach_status,
-        "gmail_available": available,
+        "gmail_available": gmail_available,
         "risk_level": risk_level
     }
 
