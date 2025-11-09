@@ -26,6 +26,9 @@ cd ~
 rm -rf email-recon-awareness  # delete old folder
 git clone https://github.com/FarisAsmar/email-recon-awareness.git
 cd email-recon-awareness
-AFTER DOWNLOAD: source venv/bin/activate
+AFTER DOWNLOAD: 
+MAKE A VE: python3 -m venv venv
+then run below
+source venv/bin/activate
 then, python email_recon.py --email targetemail@example.com
 MAKE SURE, REQUIREMENTS ARE INSTALLED>
