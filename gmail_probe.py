@@ -1,26 +1,26 @@
-import smtplib
-import dns.resolver
+import requests
 
-def check_email_exists(email):
-    domain = email.split('@')[-1]
+def check_gmail_ychecker(email):
+    url = "https://ychecker.com/api/verify"
+    headers = {"Content-Type": "application/json"}
+    payload = {"email": email}
+
     try:
-        mx_records = dns.resolver.resolve(domain, 'MX')
-        mx_host = str(mx_records[0].exchange)
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        data = response.json()
 
-        server = smtplib.SMTP()
-        server.set_debuglevel(0)
-        server.connect(mx_host)
-        server.helo(server.local_hostname)
-        server.mail('test@example.com')
-        code, message = server.rcpt(email)
-        server.quit()
+        status = data.get("status")
+        reason = data.get("reason")
+        deliverable = data.get("deliverable")
 
-        if code == 250:
-            print(f"[+] Email appears to be deliverable: {email}")
+        if status == "valid" and deliverable:
+            print(f"[YChecker] ✅ {email} is valid and deliverable ({reason})")
             return True
         else:
-            print(f"[-] Email rejected by server: {email}")
+            print(f"[YChecker] ❌ {email} is not deliverable ({reason})")
             return False
-    except Exception as e:
-        print(f"[-] Error checking email: {e}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"[YChecker] ❗ Error checking {email}: {e}")
         return False
