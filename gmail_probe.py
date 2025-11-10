@@ -1,30 +1,28 @@
-from playwright.sync_api import sync_playwright
+import requests
 
-def check_gmail_signup_probe(email):
-    username = email.split("@")[0]
+def check_gmail_zerobounce(email, api_key):
+    url = "https://api.zerobounce.net/v2/validate"
+    params = {
+        "email": email,
+        "apikey": api_key
+    }
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto("https://accounts.google.com/signup")
+    try:
+        response = requests.get(url, params=params, timeout=5)
+        response.raise_for_status()
+        data = response.json()
 
-        # Fill dummy data
-        page.fill("input[name='firstName']", "Test")
-        page.fill("input[name='lastName']", "User")
-        page.fill("input[name='Username']", username)
-        page.fill("input[name='Passwd']", "Test@1234")
-        page.fill("input[name='ConfirmPasswd']", "Test@1234")
+        status = data.get("status", "unknown")
+        sub_status = data.get("sub_status", "none")
+        free_email = data.get("free_email", False)
+        did_you_mean = data.get("did_you_mean")
 
-        # Trigger validation
-        page.click("button:has-text('Next')")
-        page.wait_for_timeout(2000)
+        print(f"[ZeroBounce] 📬 Status: {status}, Sub-status: {sub_status}, Free: {free_email}")
+        if did_you_mean:
+            print(f"[ZeroBounce] 🤔 Did you mean: {did_you_mean}?")
 
-        content = page.content()
-        browser.close()
+        return status == "valid"
 
-        if "That username is taken" in content:
-            print(f"[Gmail Probe] ✅ Gmail exists: {email}")
-            return True
-        else:
-            print(f"[Gmail Probe] ❌ Gmail not found: {email}")
-            return False
+    except Exception as e:
+        print(f"[ZeroBounce] ❗ Error checking {email}: {e}")
+        return False
