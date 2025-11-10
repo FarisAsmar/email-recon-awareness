@@ -1,13 +1,13 @@
 from social_probe import check_instagram
-from gmail_probe import check_gmail_signup_probe  # ✅ Playwright-based Gmail existence check
+from gmail_probe import check_gmail_zerobounce
 
-def run_recon(email):
+def run_recon(email, api_key):
     print(f"[+] Running recon for: {email}")
 
-    # ✅ Check if Gmail exists via signup flow
-    email_valid = check_gmail_signup_probe(email)
+    # ✅ Check if email is valid and deliverable via ZeroBounce
+    email_valid = check_gmail_zerobounce(email, api_key)
 
-    # ✅ Check linked social accounts (Instagram)
+    # ✅ Check linked social accounts
     linked_accounts = check_instagram(email)
 
     # 🔒 Breach check placeholder
@@ -43,7 +43,7 @@ def run_recon(email):
 # 🚀 CLI Entry Point
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) > 2 and sys.argv[1] == "--email":
-        run_recon(sys.argv[2])
+    if len(sys.argv) > 3 and sys.argv[1] == "--email":
+        run_recon(sys.argv[2], api_key=sys.argv[3])
     else:
-        print("Usage: python email_recon.py --email example@gmail.com")
+        print("Usage: python email_recon.py --email example@gmail.com YOUR_API_KEY")
