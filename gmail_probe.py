@@ -21,8 +21,21 @@ def check_gmail_zerobounce(email, api_key):
         if did_you_mean:
             print(f"[ZeroBounce] 🤔 Did you mean: {did_you_mean}?")
 
-        return status == "valid"
+        # Return structured data instead of a boolean
+        return {
+            "status": status,
+            "sub_status": sub_status,
+            "free_email": free_email,
+            "did_you_mean": did_you_mean,
+            "is_valid": status == "valid"
+        }
 
     except Exception as e:
         print(f"[ZeroBounce] ❗ Error checking {email}: {e}")
-        return False
+        return {
+            "status": "error",
+            "sub_status": None,
+            "free_email": None,
+            "did_you_mean": None,
+            "is_valid": False
+        }
