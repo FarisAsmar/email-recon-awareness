@@ -1,30 +1,31 @@
 from social_probe import check_instagram
 from gmail_probe import check_gmail_zerobounce
+from breach_check import check_breach_status
 
 def run_recon(email, api_key):
     print(f"[+] Running recon for: {email}")
 
-    # ✅ Check if email is valid and deliverable via ZeroBounce
+    # Validate email via ZeroBounce
     email_valid = check_gmail_zerobounce(email, api_key)
 
-    # ✅ Check linked social accounts
+    # Check linked social accounts
     linked_accounts = check_instagram(email)
 
-    # 🔒 Breach check placeholder
-    breach_status = "Unknown"
+    # Breach check
+    breach_status = check_breach_status(email)
 
-    # ✅ Gmail availability logic (same as email_valid for now)
+    # Gmail availability (placeholder logic)
     gmail_available = email_valid
 
-    # 🔍 Risk logic
+    # Risk logic
     if gmail_available and linked_accounts:
         risk_level = "High"
-    elif not gmail_available and linked_accounts:
+    elif linked_accounts:
         risk_level = "Medium"
     else:
         risk_level = "Low"
 
-    # 📊 Final report
+    # Final report
     report = {
         "email": email,
         "email_valid": email_valid,
@@ -40,10 +41,15 @@ def run_recon(email, api_key):
 
     return report
 
-# 🚀 CLI Entry Point
+# CLI Entry Point
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) > 3 and sys.argv[1] == "--email":
-        run_recon(sys.argv[2], api_key=sys.argv[3])
-    else:
+
+    if len(sys.argv) != 4 or sys.argv[1] != "--email":
         print("Usage: python email_recon.py --email example@gmail.com YOUR_API_KEY")
+        sys.exit(1)
+
+    email = sys.argv[2]
+    api_key = sys.argv[3]
+
+    run_recon(email, api_key)
