@@ -3,7 +3,7 @@ CREATED BY: FARIS ASMAR | Michigan
 # email-recon-awareness
 # 🕵️‍♂️ Email Recon Awareness Tool
 
-This project simulates how unclaimed or reused email addresses can be hijacked across platforms—raising awareness about credential hygiene and digital identity risks. This is one of my first projects, using old memories I had when I was younger to get into accounts for fun, and I realised I could automate this using python.
+This project simulates how unclaimed or reused email addresses can be hijacked across a lot of platforms which raises awareness about credential hygiene and digital identity risks. This is one of my first projects, using old memories I had when I was younger to get into accounts for fun, and I realised I could automate this using python.
 
 ## 🔍 What It Does
 
@@ -17,7 +17,7 @@ This project simulates how unclaimed or reused email addresses can be hijacked a
 Most people don’t realize:
 - Their old or unused emails may still be tied to active accounts
 - If those emails are unclaimed, attackers can register them and reset passwords
-- This tool demonstrates the risk—ethically and educationally
+- This tool demonstrates the risk ethically and educationally
 
 ## 🛠️ How to Run
 
@@ -32,3 +32,5 @@ then run below
 source venv/bin/activate
 then, python email_recon.py --email targetemail@example.com
 MAKE SURE, REQUIREMENTS ARE INSTALLED> (pip install requests)
+
+^NOT UPDATED, PLEASE BE PATIENT
