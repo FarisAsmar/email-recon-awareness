@@ -1,55 +1,107 @@
+import sys
+import argparse
+
+from gmail_probe import check_email_providers
 from social_probe import check_instagram
-from gmail_probe import check_gmail_zerobounce
 from breach_check import check_breach_status
 
-def run_recon(email, api_key):
+
+RED = "\033[91m"
+BOLD = "\033[1m"
+RESET = "\033[0m"
+
+
+def run_recon(email: str):
     print(f"[+] Running recon for: {email}")
 
-    # Validate email via ZeroBounce
-    email_valid = check_gmail_zerobounce(email, api_key)
+    # 1) Check email existence across providers (Gmail/Yahoo/Outlook) via public web flows
+    provider_results = check_email_providers(email)
 
-    # Check linked social accounts
-    linked_accounts = check_instagram(email)
+    # 2) Check if Instagram appears to have an account linked to this email
+    insta_result = check_instagram(email)
+    instagram_linked = insta_result.get("linked", False)
 
-    # Breach check
+    # 3) Breach status (stubbed – no API mode)
     breach_status = check_breach_status(email)
 
-    # Gmail availability (placeholder logic)
-    gmail_available = email_valid
+    # 4) Derive existence flags
+    any_provider_exists = any(
+        r.get("exists") is True for r in provider_results.values()
+    )
+    any_provider_negative = any(
+        r.get("exists") is False for r in provider_results.values()
+    )
 
-    # Risk logic
-    if gmail_available and linked_accounts:
+    # 5) Critical hijack condition:
+    # Instagram says "linked", but no provider reports the email as existing
+    critical_hijack_risk = instagram_linked and (not any_provider_exists) and any_provider_negative
+
+    # 6) Risk level
+    if critical_hijack_risk:
+        risk_level = "Critical"
+    elif instagram_linked and any_provider_exists:
         risk_level = "High"
-    elif linked_accounts:
+    elif instagram_linked or any_provider_exists:
         risk_level = "Medium"
     else:
         risk_level = "Low"
 
-    # Final report
+    # 7) Print critical warning if condition is met
+    if critical_hijack_risk:
+        print()
+        print(
+            f"{RED}{BOLD}☠️☠️☠️  CRITICAL ACCOUNT TAKEOVER RISK  ☠️☠️☠️{RESET}"
+        )
+        print(
+            f"{RED}Instagram appears to have an account linked to this email,"
+            f" but none of the checked providers report this email as registered.{RESET}"
+        )
+        print(
+            f"{RED}This means someone could REGISTER this email and immediately reset"
+            f" the Instagram password — instant hijack potential.{RESET}"
+        )
+        print()
+
+    # 8) Build final report
     report = {
         "email": email,
-        "email_valid": email_valid,
-        "linked_accounts": linked_accounts,
+        "providers": provider_results,
+        "instagram": insta_result,
         "breach_status": breach_status,
-        "gmail_available": gmail_available,
-        "risk_level": risk_level
+        "risk_level": risk_level,
+        "critical_hijack_risk": critical_hijack_risk,
     }
 
-    print("\n📊 Risk Report:")
-    for key, value in report.items():
-        print(f"{key}: {value}")
+    print("📊 Recon Report:")
+    print("----------------")
+    print(f"Email: {email}")
+    print(f"Risk level: {risk_level}")
+    print(f"Critical hijack risk: {critical_hijack_risk}")
+    print("\n[Providers]")
+    for name, res in provider_results.items():
+        print(f"  {name}: exists={res.get('exists')}, note={res.get('note')}")
+
+    print("\n[Instagram]")
+    print(f"  linked={instagram_linked}, note={insta_result.get('note')}")
+
+    print("\n[Breach status]")
+    print(f"  {breach_status}")
 
     return report
 
-# CLI Entry Point
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(
+        description="Email Recon Awareness Tool – public web behavior only (no API keys)."
+    )
+    parser.add_argument(
+        "--email",
+        required=True,
+        help="Target email address (e.g., example@gmail.com)",
+    )
+    return parser.parse_args(argv)
+
+
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) != 4 or sys.argv[1] != "--email":
-        print("Usage: python email_recon.py --email example@gmail.com YOUR_API_KEY")
-        sys.exit(1)
-
-    email = sys.argv[2]
-    api_key = sys.argv[3]
-
-    run_recon(email, api_key)
+    args = parse_args(sys.argv[1:])
+    run_recon(args.email)
