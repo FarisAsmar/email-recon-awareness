@@ -2,7 +2,6 @@ from gmail_probe import check_gmail
 from social_probe import check_instagram
 from breach_check import check_breach_status
 
-
 def run_recon(email: str):
     print(f"[+] Running recon for: {email}")
 
@@ -10,8 +9,7 @@ def run_recon(email: str):
     insta = check_instagram(email)
     breach = check_breach_status(email)
 
-    # Simple critical hijack heuristic:
-    # Instagram linked but Gmail does NOT exist → high hijack suspicion
+    # Simple hijack heuristic:
     hijack = False
     if insta.get("linked") and gmail.get("exists") is False:
         hijack = True
@@ -24,12 +22,9 @@ def run_recon(email: str):
     print(f"Breach info: {breach.get('note')}")
     print(f"Critical hijack risk: {hijack}")
 
-
 if __name__ == "__main__":
     import argparse
-
-    parser = argparse.ArgumentParser(description="Email recon (Gmail + Instagram, HTTP-only)")
-    parser.add_argument("--email", required=True, help="Target email address")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--email", required=True)
     args = parser.parse_args()
-
     run_recon(args.email)
